@@ -2,740 +2,413 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
-    <title>نظام مواقف حفلة فوكالي </title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>نظام مواقف فوكالي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         :root {
-            --primary: #ff6b35;
-            --secondary: #f7931e;
-            --accent: #00d4ff;
-            --dark-bg: #050508;
-            --card-bg: rgba(15, 15, 25, 0.7);
-            --card-border: rgba(255, 107, 53, 0.3);
-            --text-main: #ffffff;
-            --text-muted: #a0a0b8;
-            --success: #00ff88;
-            --danger: #ff3366;
-            --glow-primary: 0 0 20px rgba(255, 107, 53, 0.5);
-            --glow-accent: 0 0 20px rgba(0, 212, 255, 0.5);
-            --glow-success: 0 0 25px rgba(0, 255, 136, 0.4);
+            --bg: #05050a;
+            --card-bg: rgba(22, 22, 36, 0.98);
+            --primary: #ff9a3c;
+            --accent: #00e5ff;
+            --text: #ffffff;
+            --text-muted: #a8a8b8;
+            --danger: #ff4757;
+            --success: #2ed573;
+            --secondary: #ffa502;
         }
-
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-            -webkit-tap-highlight-color: transparent; 
-            touch-action: manipulation; 
-        }
-
-        html, body {
-            height: 100%;
+        body {
+            font-family: 'Cairo', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #04040a, #0a0a18, #04040a);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px 14px;
             overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-
-        body { 
-            background: var(--dark-bg); 
-            color: var(--text-main); 
-            font-family: 'Tajawal', sans-serif; 
-            padding: 20px; 
-            min-height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 24px; 
-            max-width: 650px;
-            margin: 0 auto;
+        .container {
             width: 100%;
-            position: relative;
+            max-width: 500px;
         }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: 
-                radial-gradient(circle at 20% 80%, rgba(255, 107, 53, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(0, 212, 255, 0.08) 0%, transparent 50%);
-            z-index: -1;
-            animation: floatBg 30s ease-in-out infinite;
-        }
-
-        @keyframes floatBg {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(-20px, 20px); }
-        }
-        
-        .loading-overlay { 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            right: 0; 
-            bottom: 0; 
-            background: rgba(5, 5, 8, 0.97); 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: center; 
-            z-index: 1000; 
-            font-weight: 800; 
-            color: var(--primary); 
+        /* Selection Screen */
+        .selection-screen {
+            display: flex;
+            flex-direction: column;
             gap: 24px;
-            backdrop-filter: blur(20px);
+            padding: 24px 10px;
         }
-
-        .loading-overlay.hide { 
-            display: none; 
-        }
-
-        .spinner { 
-            width: 70px; 
-            height: 70px; 
-            border: 4px solid rgba(255, 107, 53, 0.1); 
-            border-top-color: var(--primary); 
-            border-left-color: var(--accent);
-            border-radius: 50%; 
-            animation: spin 0.8s linear infinite; 
-            box-shadow: 0 0 30px rgba(255, 107, 53, 0.4);
-        }
-
-        @keyframes spin { 
-            0% { transform: rotate(0deg); } 
-            100% { transform: rotate(360deg); } 
-        }
-
-
-        header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            background: var(--card-bg); 
-            border: 1px solid var(--card-border); 
-            padding: 20px; 
-            border-radius: 20px;
-            box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.5),
-                inset 0 1px 0 rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-        }
-
-        header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--primary), var(--accent), transparent);
-        }
-
-        header h1 { 
-            font-size: 20px; 
-            font-weight: 900; 
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+        .selection-screen h2 {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 900;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-shadow: 0 0 30px rgba(255, 107, 53, 0.3);
-            letter-spacing: 0.5px;
+            margin-bottom: 8px;
         }
-
-        .refresh-btn {
-            background: rgba(255, 107, 53, 0.1);
-            border: 1px solid rgba(255, 107, 53, 0.3);
-            color: var(--primary);
+        .selection-panels {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+        .selection-panel {
+            background: var(--card-bg);
+            padding: 32px 20px;
+            border-radius: 24px;
+            border-top: 4px solid;
+            border-top-color: var(--primary);
+            text-align: center;
             cursor: pointer;
-            font-size: 14px;
-            padding: 10px 18px;
-            border-radius: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.6), 0 0 20px rgba(255, 154, 60, 0.15);
+        }
+        .selection-panel:hover { 
+            transform: translateY(-5px) scale(1.02); 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7), 0 0 30px rgba(255, 154, 60, 0.25); 
+        }
+        .selection-panel i {
+            font-size: 50px;
+            margin-bottom: 12px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .selection-panel h3 {
+            font-size: 18px;
+            font-weight: 900;
+            margin-bottom: 8px;
+        }
+        .selection-panel p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .selection-panel.vip { 
+            border-top-color: var(--accent); 
+            box-shadow: 0 12px 40px rgba(0,0,0,0.6), 0 0 20px rgba(0, 229, 255, 0.15); 
+        }
+        .selection-panel.vip:hover {
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7), 0 0 30px rgba(0, 229, 255, 0.25); 
+        }
+        /* Header */
+        .header {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-family: 'Tajawal', sans-serif;
-            font-weight: 700;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            backdrop-filter: blur(10px);
+            gap: 14px;
+            margin-bottom: 20px;
+            padding: 16px 18px;
+            background: linear-gradient(135deg, rgba(255, 154, 60, 0.18), rgba(0, 229, 255, 0.14));
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
         }
-
-        .refresh-btn:hover {
-            background: rgba(255, 107, 53, 0.2);
-            border-color: var(--primary);
-            transform: translateY(-4px);
-            box-shadow: var(--glow-primary);
-        }
-
-        .refresh-btn:active {
-            transform: translateY(-2px) scale(0.98);
-        }
-
-        .stats-grid { 
-            display: grid; 
-            grid-template-columns: repeat(3, 1fr); 
-            gap: 14px; 
-        }
-
-        .stat-card { 
-            background: var(--card-bg); 
-            border: 1px solid rgba(255, 255, 255, 0.08); 
-            border-radius: 18px; 
-            padding: 20px 12px; 
-            text-align: center;
-            box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.05);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.5), transparent);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-6px) scale(1.02);
-            box-shadow: 
-                0 16px 48px rgba(0, 0, 0, 0.6),
-                0 0 30px rgba(255, 107, 53, 0.2);
-            border-color: var(--card-border);
-        }
-
-        .stat-card:hover::after {
-            opacity: 1;
-        }
-
-        .stat-label { 
-            font-size: 11px; 
-            color: var(--text-muted); 
-            margin-bottom: 8px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .stat-value { 
-            font-size: 28px; 
-            font-weight: 900; 
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
-        }
-
-        .section-title { 
-            font-size: 16px; 
-            font-weight: 800; 
-            color: #fff; 
-            margin: 8px 0 16px 0; 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-            letter-spacing: 0.3px;
-        }
-
-        .section-title i { 
-            color: var(--primary);
-            text-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
-        }
-
-        .lot-card { 
-            background: var(--card-bg); 
-            border: 1px solid rgba(255, 255, 255, 0.08); 
-            border-radius: 20px; 
-            padding: 20px;
-            box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.05);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .lot-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            opacity: 0.8;
-        }
-
-        .lot-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 
-                0 16px 48px rgba(0, 0, 0, 0.6),
-                0 0 40px rgba(255, 107, 53, 0.15);
-            border-color: rgba(255, 107, 53, 0.3);
-        }
-
-        .lot-info { 
-            display: flex; 
-            justify-content: space-between; 
-            margin-bottom: 16px; 
-            font-size: 15px; 
-            font-weight: 800; 
-            align-items: center;
-        }
-
-        .lot-cap { 
-            font-size: 12px; 
-            color: var(--accent);
-            background: rgba(0, 212, 255, 0.1);
-            padding: 6px 14px;
-            border-radius: 30px;
-            border: 1px solid rgba(0, 212, 255, 0.2);
-            font-weight: 700;
-        }
-        
-        .lot-actions { 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            gap: 14px; 
-        }
-
-        .btn-ctrl { 
-            flex: 1; 
-            height: 56px; 
-            border: none; 
-            border-radius: 14px; 
-            font-size: 28px; 
-            font-weight: 900; 
-            color: #fff; 
-            cursor: pointer; 
-            user-select: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-ctrl::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .btn-ctrl:hover::before {
-            left: 100%;
-        }
-
-        .btn-ctrl:active {
-            transform: scale(0.94);
-        }
-
-        .btn-minus { 
-            background: linear-gradient(135deg, #ff3366 0%, #ff1a4d 100%);
-            box-shadow: 0 8px 24px rgba(255, 51, 102, 0.3);
-        }
-
-        .btn-minus:hover {
-            box-shadow: 0 12px 36px rgba(255, 51, 102, 0.5);
-            transform: translateY(-3px);
-        }
-
-        .btn-plus { 
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: #000;
-            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.4);
-        }
-
-        .btn-plus:hover {
-            box-shadow: 0 12px 36px rgba(255, 107, 53, 0.6);
-            transform: translateY(-3px);
-        }
-        
-        .num-input { 
-            width: 90px; 
-            height: 56px;
-            background: rgba(5, 5, 8, 0.6);
-            border: 2px solid rgba(255, 255, 255, 0.1);
+        .back-btn {
+            padding: 10px 16px;
+            border: none;
+            background: rgba(255,255,255,0.1);
             border-radius: 14px;
             color: #fff;
-            text-align: center; 
-            font-size: 24px; 
-            font-weight: 900; 
-            font-family: 'Poppins', sans-serif;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
         }
-
-        .num-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 
-                0 0 0 3px rgba(255, 107, 53, 0.15),
-                inset 0 2px 8px rgba(0, 0, 0, 0.3),
-                0 0 20px rgba(255, 107, 53, 0.3);
-            transform: scale(1.02);
+        .back-btn:hover { background: rgba(255,255,255,0.18); transform: translateX(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.4); }
+        .header h1 {
+            flex: 1;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 900;
         }
-
-        .num-input::-webkit-outer-spin-button,
-        .num-input::-webkit-inner-spin-button { 
-            -webkit-appearance: none; 
-            margin: 0; 
+        .refresh-btn {
+            padding: 10px 16px;
+            border: none;
+            background: linear-gradient(135deg, var(--primary), #ff6b00);
+            border-radius: 14px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            box-shadow: 0 4px 16px rgba(255, 154, 60, 0.4);
         }
-
-        .num-input { 
-            -moz-appearance: textfield; 
+        .refresh-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 154, 60, 0.5); }
+        /* Simple Overview */
+        .simple-overview {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 22px;
         }
-
-        .chart-box { 
-            background: var(--card-bg); 
-            border: 1px solid rgba(255, 255, 255, 0.08); 
-            border-radius: 20px; 
-            padding: 20px;
-            box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
+        .overview-card {
+            flex: 1;
+            background: var(--card-bg);
+            padding: 18px 14px;
+            border-radius: 18px;
+            border-top: 4px solid;
+            text-align: center;
+            box-shadow: 0 10px 36px rgba(0,0,0,0.6);
         }
-
-        .bar-chart { 
-            display: flex; 
-            flex-direction: column; 
-            gap: 14px; 
+        .overview-card h3 {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            font-weight: 700;
         }
-
-        .chart-row { 
-            display: flex; 
-            align-items: center; 
-            gap: 14px; 
+        .overview-card .number {
+            font-size: 30px;
+            font-weight: 900;
+            font-family: 'Cairo', sans-serif;
         }
-
-        .chart-lbl { 
-            width: 55px; 
-            font-size: 13px; 
-            color: var(--text-muted); 
-            font-weight: 800; 
+        /* Lot Cards */
+        .lot-card {
+            background: var(--card-bg);
+            padding: 18px 16px;
+            border-radius: 18px;
+            margin-bottom: 14px;
+            border-top: 4px solid rgba(255,255,255,0.08);
+            box-shadow: 0 10px 36px rgba(0,0,0,0.55);
         }
-
-        .chart-bg { 
-            flex-grow: 1; 
-            height: 22px; 
-            background: rgba(10, 10, 18, 0.6); 
-            border-radius: 12px; 
-            overflow: hidden;
-            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+        .lot-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            gap: 10px;
         }
-
-        .chart-fill { 
-            height: 100%; 
-            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
-            width: 0%; 
-            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        .lot-info .lot-name {
+            font-size: 15px;
+            font-weight: 800;
+        }
+        .lot-cap {
+            font-size: 12px;
+            font-weight: 800;
+            color: #fff;
+            background: linear-gradient(135deg, var(--accent), #00a8cc);
+            padding: 8px 12px;
             border-radius: 12px;
-            box-shadow: 0 0 20px rgba(255, 107, 53, 0.4);
-            position: relative;
+            white-space: nowrap;
+            box-shadow: 0 4px 16px rgba(0, 229, 255, 0.3);
         }
-
-        .chart-fill::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            animation: shimmer 2s infinite;
+        /* Monitoring Controls */
+        .lot-controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
         }
-
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
+        .btn-ctrl {
+            flex: 0 0 52px;
+            padding: 12px;
+            border: none;
+            border-radius: 14px;
+            font-size: 22px;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
         }
-
-        .chart-val { 
-            width: 55px; 
-            text-align: left; 
-            font-size: 13px; 
-            font-weight: 800; 
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .btn-minus { background: linear-gradient(135deg, #ff4757, #ff6b7a); }
+        .btn-plus { background: linear-gradient(135deg, #2ed573, #3ce889); }
+        .btn-ctrl:hover { transform: scale(1.08); }
+        .btn-ctrl:active { transform: scale(0.95); }
+        .num-input {
+            flex: 1;
+            text-align: center;
+            font-size: 26px;
+            font-weight: 900;
+            font-family: 'Poppins', 'Cairo', sans-serif;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            border: 2px solid rgba(255, 255, 255, 0.12);
+            color: #fff;
+            outline: none;
+            transition: all 0.2s ease;
         }
-
-        .sync-btn { 
-            width: 100%; 
-            height: 64px; 
-            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
-            color: #000; 
-            border: none; 
-            border-radius: 18px; 
-            font-size: 18px; 
-            font-weight: 900; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 10px; 
-            margin-top: auto; 
-            cursor: pointer; 
-            box-shadow: 0 12px 40px rgba(0, 255, 136, 0.4);
-            font-family: 'Tajawal', sans-serif;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
+        .num-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(255, 154, 60, 0.25);
+        }
+        /* Calculation Stats */
+        .calc-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .calc-stat {
+            padding: 12px 10px;
+            border-radius: 12px;
+            text-align: center;
+            background: rgba(255,255,255,0.06);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+        }
+        .calc-stat h4 {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+        .calc-stat p {
+            font-size: 18px;
+            font-weight: 900;
+        }
+        .progress-bar {
+            height: 16px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
             overflow: hidden;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.4);
         }
-
-        .sync-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
+        .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.6s;
+            border-radius: 10px;
+            transition: width 0.4s ease;
+            box-shadow: 0 0 20px;
         }
-
-        .sync-btn:hover::before {
-            left: 100%;
+        /* Actions */
+        .actions {
+            display: flex;
+            gap: 14px;
+            margin-top: 16px;
         }
-
-        .sync-btn:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 18px 56px rgba(0, 255, 136, 0.6);
+        .btn-sync {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 16px;
+            font-weight: 900;
+            font-size: 16px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #4a69bd, #6a89cc);
+            color: #fff;
+            box-shadow: 0 8px 28px rgba(74, 105, 189, 0.5);
+            transition: all 0.3s ease;
         }
-
-        .sync-btn:active {
-            transform: translateY(-2px) scale(0.98);
-        }
-
-        .toast { 
-            position: fixed; 
-            bottom: 40px; 
-            left: 50%; 
-            transform: translateX(-50%) translateY(150px); 
-            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
-            color: #000; 
-            padding: 16px 32px; 
-            border-radius: 50px; 
-            font-size: 15px; 
-            font-weight: 900; 
-            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
-            z-index: 100;
-            box-shadow: 0 16px 48px rgba(0, 255, 136, 0.5);
-            backdrop-filter: blur(10px);
-        }
-
-        .toast.show { 
-            transform: translateX(-50%) translateY(0); 
-        }
-
-        @keyframes spin { 
-            0% { transform: rotate(0deg); } 
-            100% { transform: rotate(360deg); } 
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-
-        .selection-screen {
+        .btn-sync:hover { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(74, 105, 189, 0.6); }
+        /* Loading & Toast */
+        .loading {
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
+            right:0;
             bottom: 0;
-            background: var(--dark-bg);
-            z-index: 900;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            gap: 30px;
-            padding: 20px;
+            gap: 16px;
         }
-
-        .selection-screen.hide {
-            display: none;
+        .loading.hide { display: none; }
+        .spinner {
+            width: 64px;
+            height: 64px;
+            border: 5px solid rgba(255,154,60,0.2);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            box-shadow: 0 0 40px rgba(255, 154, 60, 0.5);
         }
-
-        .selection-title {
-            font-size: 28px;
-            font-weight: 900;
-            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .selection-panels {
-            display: flex;
-            gap: 20px;
-            width: 100%;
-            max-width: 700px;
-        }
-
-        .selection-panel {
-            flex: 1;
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
             background: var(--card-bg);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 40px 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .selection-panel::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, transparent, var(--primary), var(--accent), transparent);
+            color: #fff;
+            padding: 16px 24px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 12px 44px rgba(0,0,0,0.7);
+            font-weight: 900;
             opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .selection-panel:hover {
-            transform: translateY(-10px) scale(1.03);
-            border-color: var(--card-border);
-            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6), 0 0 40px rgba(255, 107, 53, 0.2);
-        }
-
-        .selection-panel:hover::before {
-            opacity: 1;
-        }
-
-        .selection-panel i {
-            font-size: 56px;
-            margin-bottom: 16px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .selection-panel.vip i {
-            background: linear-gradient(135deg, var(--accent), var(--success));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .selection-panel h2 {
-            font-size: 20px;
-            font-weight: 800;
-            margin-bottom: 12px;
-        }
-
-        .selection-panel p {
-            font-size: 14px;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-
-        .back-btn {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: var(--text-main);
-            cursor: pointer;
-            font-size: 14px;
-            padding: 10px 20px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-family: 'Tajawal', sans-serif;
-            font-weight: 700;
+            pointer-events: none;
             transition: all 0.3s ease;
         }
-
-        .back-btn:hover {
-            background: rgba(255, 107, 53, 0.2);
-            border-color: var(--primary);
-            transform: translateX(5px);
-        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(-10px); }
     </style>
 </head>
 <body>
-
-    <div class="loading-overlay" id="loading">
+    <div class="loading" id="loading">
         <div class="spinner"></div>
         <span>جاري الاتصال بقاعدة البيانات...</span>
     </div>
 
-    <div class="selection-screen" id="selectionScreen">
-        <h2 class="selection-title">اختر نوع المواقف</h2>
-        <div class="selection-panels">
-            <div class="selection-panel" onclick="selectPanel('general')">
-                <i class="fa-solid fa-car"></i>
-                <h2>المواقف العامة</h2>
-                <p>CP1, CP2, CP3</p>
+    <div class="container">
+        <!-- Selection Screen -->
+        <div class="selection-screen" id="selectionScreen">
+            <h2><i class="fa-solid fa-car-side"></i> نظام مواقف فوكالي</h2>
+            <div class="selection-panels">
+                <div class="selection-panel" onclick="selectMode('monitoring')">
+                    <i class="fa-solid fa-sliders"></i>
+                    <h3>المراقبة</h3>
+                    <p>تحديث الموقف</p>
+                </div>
+                <div class="selection-panel vip" onclick="selectMode('calculation')">
+                    <i class="fa-solid fa-calculator"></i>
+                    <h3>الحساب</h3>
+                    <p>تفاصيل الحساب</p>
+                </div>
             </div>
-            <div class="selection-panel vip" onclick="selectPanel('vip')">
-                <i class="fa-solid fa-crown"></i>
-                <h2>مواقف كبار الشخصيات</h2>
-                <p>VIP1, VIP2</p>
+        </div>
+
+        <!-- Main Content (shown after selection) -->
+        <div id="mainContent" style="display: none;">
+            <!-- Header -->
+            <div class="header">
+                <button class="back-btn" onclick="showSelection()">
+                    <i class="fa-solid fa-arrow-left"></i> عودة
+                </button>
+                <h1 id="modeTitle">المراقبة</h1>
+                <button class="refresh-btn" onclick="fetchFromFirebase()">
+                    <i class="fa-solid fa-rotate"></i> تحديث
+                </button>
+            </div>
+
+            <!-- Overview Cards -->
+            <div class="simple-overview">
+                <div class="overview-card" style="border-top-color: var(--primary);">
+                    <h3>السيارات الحالية</h3>
+                    <div class="number" id="totalCurrent" style="color: var(--primary);">0</div>
+                </div>
+                <div class="overview-card" style="border-top-color: var(--success);">
+                    <h3>المتبقي</h3>
+                    <div class="number" id="totalRemaining" style="color: var(--success);">0</div>
+                </div>
+                <div class="overview-card" style="border-top-color: var(--accent);">
+                    <h3>الإشغال</h3>
+                    <div class="number" id="totalOccupancy" style="color: var(--accent);">0%</div>
+                </div>
+            </div>
+
+            <!-- Lots Container -->
+            <div id="lotsContainer"></div>
+
+            <!-- Actions (only in monitoring) -->
+            <div class="actions" id="monitoringActions" style="display: none;">
+                <button class="btn-sync" onclick="syncToFirebase()">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> حفظ
+                </button>
             </div>
         </div>
     </div>
 
-    <header id="mainHeader" style="display: none;">
-        <button class="back-btn" onclick="showSelection()"><i class="fa-solid fa-arrow-left"></i> عودة</button>
-        <h1 id="panelTitle">مواقف حفلة فوكالي</h1>
-        <button class="refresh-btn" onclick="fetchFromFirebase()"><i class="fa-solid fa-rotate"></i> تحديث</button>
-    </header>
-
-    <div class="stats-grid" id="statsGrid" style="display: none;">
-        <div class="stat-card"><div class="stat-label">السيارات الحالية</div><div class="stat-value" id="totalCurrent">0</div></div>
-        <div class="stat-card"><div class="stat-label">المواقف الشاغرة</div><div class="stat-value" id="totalRemaining">-</div></div>
-        <div class="stat-card"><div class="stat-label">نسبة الإشغال</div><div class="stat-value" id="totalOccupancy">0%</div></div>
-    </div>
-
-    <div id="lotsContainer" style="display: none;"></div>
-
-    <div class="chart-box" id="chartBox" style="display: none;">
-        <div class="section-title"><i class="fa-solid fa-chart-bar"></i> <span>مراقبة نسبة</span></div>
-        <div class="bar-chart" id="chartContainer"></div>
-    </div>
-
-    <button class="sync-btn" id="syncBtn" style="display: none;" onclick="syncToFirebase()"><i class="fa-solid fa-cloud-arrow-up"></i> حفظ وتحديث</button>
-    <div class="toast" id="toast">✓ تم حفظ البيانات على Firebase بنجاح!</div>
+    <div class="toast" id="toast">✓ تم الحفظ بنجاح!</div>
 
     <script>
         const FIREBASE_URL = "https://vocaly-parking-default-rtdb.firebaseio.com/data.json";
@@ -754,44 +427,121 @@
             { id: 'VIP1', name: parkingConfig['VIP1'].name, capacity: parkingConfig['VIP1'].capacity, current: 0 },
             { id: 'VIP2', name: parkingConfig['VIP2'].name, capacity: parkingConfig['VIP2'].capacity, current: 0 }
         ];
+        let currentMode = null;
 
-        let currentPanel = localStorage.getItem('selectedPanel') || null;
-
-        const generalLots = ['CP1', 'CP2', 'CP3'];
-        const vipLots = ['VIP1', 'VIP2'];
-
-        function selectPanel(panel) {
-            currentPanel = panel;
-            localStorage.setItem('selectedPanel', panel);
-            showMainContent();
-            fetchFromFirebase();
+        function selectMode(mode) {
+            currentMode = mode;
+            document.getElementById('modeTitle').innerText = mode === 'monitoring' ? 'المراقبة' : 'الحساب';
+            document.getElementById('monitoringActions').style.display = mode === 'monitoring' ? 'flex' : 'none';
+            document.getElementById('selectionScreen').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+            renderUI();
         }
 
         function showSelection() {
-            currentPanel = null;
-            localStorage.removeItem('selectedPanel');
-            document.getElementById('selectionScreen').classList.remove('hide');
-            document.getElementById('mainHeader').style.display = 'none';
-            document.getElementById('statsGrid').style.display = 'none';
-            document.getElementById('lotsContainer').style.display = 'none';
-            document.getElementById('chartBox').style.display = 'none';
-            document.getElementById('syncBtn').style.display = 'none';
+            currentMode = null;
+            document.getElementById('selectionScreen').style.display = 'flex';
+            document.getElementById('mainContent').style.display = 'none';
         }
 
-        function showMainContent() {
-            document.getElementById('selectionScreen').classList.add('hide');
-            document.getElementById('mainHeader').style.display = 'flex';
-            document.getElementById('statsGrid').style.display = 'grid';
-            document.getElementById('lotsContainer').style.display = 'block';
-            document.getElementById('chartBox').style.display = 'block';
-            document.getElementById('syncBtn').style.display = 'flex';
-
-            // Update title
-            if (currentPanel === 'general') {
-                document.getElementById('panelTitle').innerText = 'المواقف العامة';
-            } else {
-                document.getElementById('panelTitle').innerText = 'مواقف كبار الشخصيات';
+        function changeVal(id, amt) {
+            let lot = parkingLots.find(l => l.id === id);
+            if(lot && (lot.current + amt >= 0) && (lot.current + amt <= lot.capacity)) {
+                lot.current += amt;
+                renderUI();
             }
+        }
+
+        function updateInputVal(id, value) {
+            let lot = parkingLots.find(l => l.id === id);
+            if(lot) {
+                let num = parseInt(value) || 0;
+                if(num < 0) num = 0;
+                if(num > lot.capacity) num = lot.capacity;
+                lot.current = num;
+                renderUI();
+            }
+        }
+
+        function renderUI() {
+            const container = document.getElementById('lotsContainer');
+            container.innerHTML = '';
+            
+            let totalCur = 0, totalCap = 0;
+            
+            parkingLots.forEach(lot => {
+                totalCur += lot.current;
+                totalCap += lot.capacity;
+                const pct = lot.capacity > 0 ? Math.round((lot.current / lot.capacity) * 100) : 0;
+                const remaining = lot.capacity - lot.current;
+                let statusColor = 'var(--success)';
+                let gradientStart = 'var(--success)';
+                let gradientEnd = '#1abc9c';
+                if(pct >= 80) {
+                    statusColor = 'var(--danger)';
+                    gradientStart = 'var(--danger)';
+                    gradientEnd = '#ff6b7a';
+                } else if(pct >= 60) {
+                    statusColor = 'var(--secondary)';
+                    gradientStart = 'var(--secondary)';
+                    gradientEnd = '#ffbb33';
+                }
+
+                if (currentMode === 'monitoring') {
+                    container.insertAdjacentHTML('beforeend', `
+                        <div class="lot-card">
+                            <div class="lot-info">
+                                <span class="lot-name">${lot.name}</span>
+                                <span class="lot-cap">السعة: ${lot.capacity}</span>
+                            </div>
+                            <div class="lot-controls">
+                                <button class="btn-ctrl btn-plus" onclick="changeVal('${lot.id}', 1)">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                                <input type="number" class="num-input" 
+                                       value="${lot.current}" 
+                                       min="0" max="${lot.capacity}"
+                                       onchange="updateInputVal('${lot.id}', this.value)"
+                                       inputmode="numeric">
+                                <button class="btn-ctrl btn-minus" onclick="changeVal('${lot.id}', -1)">
+                                    <i class="fa-solid fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `);
+                } else {
+                    container.insertAdjacentHTML('beforeend', `
+                        <div class="lot-card">
+                            <div class="lot-info">
+                                <span class="lot-name">${lot.name}</span>
+                                <span class="lot-cap">السعة: ${lot.capacity}</span>
+                            </div>
+                            <div class="calc-stats">
+                                <div class="calc-stat">
+                                    <h4>السيارات</h4>
+                                    <p style="color: var(--primary);">${lot.current.toLocaleString()}</p>
+                                </div>
+                                <div class="calc-stat">
+                                    <h4>المتبقي</h4>
+                                    <p style="color: ${statusColor};">${remaining.toLocaleString()}</p>
+                                </div>
+                                <div class="calc-stat">
+                                    <h4>الإشغال</h4>
+                                    <p style="color: ${statusColor};">${pct}%</p>
+                                </div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${pct}%; background: linear-gradient(90deg, ${gradientStart}, ${gradientEnd}); color: ${statusColor};"></div>
+                            </div>
+                        </div>
+                    `);
+                }
+            });
+
+            document.getElementById('totalCurrent').innerText = totalCur.toLocaleString();
+            document.getElementById('totalRemaining').innerText = (totalCap - totalCur).toLocaleString();
+            const totalPct = totalCap > 0 ? Math.round((totalCur / totalCap) * 100) : 0;
+            document.getElementById('totalOccupancy').innerText = totalPct + '%';
         }
 
         async function fetchFromFirebase() {
@@ -809,163 +559,39 @@
                     }));
                 }
                 renderUI();
-            } catch (e) { 
-                console.error("Error fetching ", e);
+            } catch (e) {
                 renderUI();
             }
             document.getElementById('loading').classList.add('hide');
         }
 
-        async function saveToFirebase() {
-            let uploadData = parkingLots.map(l => ({id: l.id, current: l.current}));
-            
+        async function syncToFirebase() {
+            let uploadData = parkingLots.map(l => ({ id: l.id, current: l.current }));
             try {
                 let response = await fetch(FIREBASE_URL, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(uploadData)
                 });
-                
-                if (!response.ok) {
-                    alert("مشكلة في حفظ البيانات !");
-                }
+                const toast = document.getElementById('toast');
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 2500);
             } catch(e) {
-                console.error("Error saving ", e);
-                alert("حدث خطأ في الاتصال !");
             }
         }
 
-        function renderUI() {
-            const container = document.getElementById('lotsContainer');
-            const chart = document.getElementById('chartContainer');
-            
-            const activeId = document.activeElement ? document.activeElement.dataset.id : null;
-            
-            container.innerHTML = ''; chart.innerHTML = '';
-            let totalCur = 0, totalCap = 0;
-
-            // Filter lots based on current panel
-            let filteredLots = [];
-            if (currentPanel === 'general') {
-                filteredLots = parkingLots.filter(lot => generalLots.includes(lot.id));
-            } else if (currentPanel === 'vip') {
-                filteredLots = parkingLots.filter(lot => vipLots.includes(lot.id));
-            } else {
-                filteredLots = parkingLots;
-            }
-
-            filteredLots.forEach(lot => {
-                totalCur += lot.current; totalCap += lot.capacity;
-                let pct = lot.capacity > 0 ? (lot.current / lot.capacity) * 100 : 0;
-
-                container.insertAdjacentHTML('beforeend', `
-                    <div class="lot-card" style="margin-bottom:12px;">
-                        <div class="lot-info"><span>${lot.name}</span><span class="lot-cap">السعة: ${lot.capacity}</span></div>
-                        <div class="lot-actions">
-                            <button class="btn-ctrl btn-minus" onclick="changeVal('${lot.id}', -1)">-</button>
-                            <input type="number" class="num-input" data-id="${lot.id}" pattern="[0-9]*" inputmode="numeric" value="${lot.current}" oninput="updateInputVal('${lot.id}', this.value)">
-                            <button class="btn-ctrl btn-plus" onclick="changeVal('${lot.id}', 1)">+</button>
-                        </div>
-                    </div>
-                `);
-
-                chart.insertAdjacentHTML('beforeend', `
-                    <div class="chart-row">
-                        <span class="chart-lbl">${lot.id}</span>
-                        <div class="chart-bg"><div class="chart-fill" style="width: ${pct}%"></div></div>
-                        <span class="chart-val">${pct.toFixed(1)}%</span>
-                    </div>
-                `);
-            });
-
-            document.getElementById('totalCurrent').innerText = totalCur.toLocaleString();
-            document.getElementById('totalRemaining').innerText = (totalCap - totalCur).toLocaleString();
-            document.getElementById('totalOccupancy').innerText = totalCap > 0 ? ((totalCur / totalCap) * 100).toFixed(1) + '%' : '0%';
-
-            if (activeId) {
-                const inputEl = container.querySelector(`input[data-id="${activeId}"]`);
-                if (inputEl) inputEl.focus();
-            }
-        }
-
-        function changeVal(id, amt) {
-            let lot = parkingLots.find(l => l.id === id);
-            if(lot && (lot.current + amt >= 0) && (lot.current + amt <= lot.capacity)) {
-                lot.current += amt;
-                renderUI();
-                saveToFirebase();
-            }
-        }
-
-        function updateInputVal(id, val) {
-            let lot = parkingLots.find(l => l.id === id);
-            if(lot) {
-                let num = parseInt(val) || 0;
-                if (num < 0) num = 0;
-                if (num > lot.capacity) num = lot.capacity;
-                lot.current = num;
-                updateLiveTotalsOnly();
-                saveToFirebase();
-            }
-        }
-
-        function updateLiveTotalsOnly() {
-            let totalCur = 0, totalCap = 0;
-            let filteredLots = [];
-            if (currentPanel === 'general') {
-                filteredLots = parkingLots.filter(lot => generalLots.includes(lot.id));
-            } else if (currentPanel === 'vip') {
-                filteredLots = parkingLots.filter(lot => vipLots.includes(lot.id));
-            } else {
-                filteredLots = parkingLots;
-            }
-
-            filteredLots.forEach(lot => {
-                totalCur += lot.current; totalCap += lot.capacity;
-                let pct = lot.capacity > 0 ? (lot.current / lot.capacity) * 100 : 0;
-                
-                const rows = document.getElementById('chartContainer').children;
-                for(let row of rows) {
-                    if(row.children[0].innerText === lot.id) {
-                        row.children[1].children[0].style.width = pct + '%';
-                        row.children[2].innerText = pct.toFixed(1) + '%';
-                    }
+        // Keyboard back button support (Escape key)
+        document.addEventListener('keydown', (e) => {
+            if(e.key === 'Escape') {
+                if(currentMode) {
+                    showSelection();
                 }
-            });
-            document.getElementById('totalCurrent').innerText = totalCur.toLocaleString();
-            document.getElementById('totalRemaining').innerText = (totalCap - totalCur).toLocaleString();
-            document.getElementById('totalOccupancy').innerText = totalCap > 0 ? ((totalCur / totalCap) * 100).toFixed(1) + '%' : '0%';
-        }
-
-        async function syncToFirebase() {
-            document.getElementById('loading').classList.remove('hide');
-            await saveToFirebase();
-            document.getElementById('loading').classList.add('hide');
-            const toast = document.getElementById('toast');
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2500);
-        }
-
-        document.addEventListener('data-id', function (event) {
-            if (event.touches.length > 1) {
-                event.preventDefault();
             }
-        }, { passive: false });
+        });
 
-        let lastTouchEnd = 0;
-        document.addEventListener('touchend', function (event) {
-            let now = (new Date()).getTime();
-            if (now - lastTouchEnd <= 300) {
-                event.preventDefault();
-            }
-            lastTouchEnd = now;
-        }, false);
-
-        // Check if user already has a saved choice
-        if (currentPanel) {
-            showMainContent();
+        document.addEventListener('DOMContentLoaded', () => {
             fetchFromFirebase();
-        }
+        });
     </script>
 </body>
 </html>
