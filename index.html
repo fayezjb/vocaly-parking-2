@@ -73,6 +73,43 @@
             50% { transform: translate(-20px, 20px); }
         }
         
+        .loading-overlay { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            bottom: 0; 
+            background: rgba(5, 5, 8, 0.97); 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 1000; 
+            font-weight: 800; 
+            color: var(--primary); 
+            gap: 24px;
+            backdrop-filter: blur(20px);
+        }
+
+        .loading-overlay.hide { 
+            display: none; 
+        }
+
+        .spinner { 
+            width: 70px; 
+            height: 70px; 
+            border: 4px solid rgba(255, 107, 53, 0.1); 
+            border-top-color: var(--primary); 
+            border-left-color: var(--accent);
+            border-radius: 50%; 
+            animation: spin 0.8s linear infinite; 
+            box-shadow: 0 0 30px rgba(255, 107, 53, 0.4);
+        }
+
+        @keyframes spin { 
+            0% { transform: rotate(0deg); } 
+            100% { transform: rotate(360deg); } 
+        }
 
 
         header { 
@@ -532,9 +569,14 @@
 </head>
 <body>
 
+    <div class="loading-overlay" id="loading">
+        <div class="spinner"></div>
+        <span>جاري الاتصال بقاعدة البيانات...</span>
+    </div>
+
     <header>
         <h1>مواقف حفلة فوكالي</h1>
-        <button class="refresh-btn" onclick="loadFromLocal()"><i class="fa-solid fa-rotate"></i> إعادة تحميل</button>
+        <button class="refresh-btn" onclick="fetchFromFirebase()"><i class="fa-solid fa-rotate"></i> تحديث</button>
     </header>
 
     <div class="stats-grid">
@@ -550,10 +592,11 @@
         <div class="bar-chart" id="chartContainer"></div>
     </div>
 
-    <button class="sync-btn" onclick="syncToLocal()"><i class="fa-solid fa-save"></i> حفظ البيانات</button>
-    <div class="toast" id="toast">✓ تم حفظ البيانات بنجاح!</div>
+    <button class="sync-btn" onclick="syncToFirebase()"><i class="fa-solid fa-cloud-arrow-up"></i> حفظ وتحديث</button>
+    <div class="toast" id="toast">✓ تم حفظ البيانات على Firebase بنجاح!</div>
 
     <script>
+        const FIREBASE_URL = "https://vocaly-parking-default-rtdb.firebaseio.com/data.json";
         const parkingConfig = {
             'CP1': { name: 'المواقف العامة (CP1)', capacity: 50 },
             'CP2': { name: 'المواقف العامة (CP2)', capacity: 65 },
@@ -570,29 +613,45 @@
             { id: 'VIP2', name: parkingConfig['VIP2'].name, capacity: parkingConfig['VIP2'].capacity, current: 0 }
         ];
 
-        function loadFromLocal() {
-            const saved = localStorage.getItem('vocaly-parking-data');
-            if (saved) {
-                try {
-                    const parsed = JSON.parse(saved);
-                    if (Array.isArray(parsed)) {
-                        parkingLots = parsed.map(item => ({
-                            id: item.id,
-                            name: parkingConfig[item.id].name,
-                            capacity: parkingConfig[item.id].capacity,
-                            current: item.current || 0
-                        }));
-                    }
-                } catch (e) {
-                    console.error(e);
+        async function fetchFromFirebase() {
+            document.getElementById('loading').classList.remove('hide');
+            try {
+                let response = await fetch(FIREBASE_URL);
+                let cloudData = await response.json();
+                
+                if (cloudData && Array.isArray(cloudData)) {
+                    parkingLots = cloudData.map(item => ({
+                        id: item.id,
+                        name: parkingConfig[item.id].name,
+                        capacity: parkingConfig[item.id].capacity,
+                        current: item.current || 0
+                    }));
                 }
+                renderUI();
+            } catch (e) { 
+                console.error("Error fetching ", e);
+                renderUI();
             }
-            renderUI();
+            document.getElementById('loading').classList.add('hide');
         }
 
-        function saveToLocal() {
-            const saveData = parkingLots.map(l => ({id: l.id, current: l.current}));
-            localStorage.setItem('vocaly-parking-data', JSON.stringify(saveData));
+        async function saveToFirebase() {
+            let uploadData = parkingLots.map(l => ({id: l.id, current: l.current}));
+            
+            try {
+                let response = await fetch(FIREBASE_URL, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(uploadData)
+                });
+                
+                if (!response.ok) {
+                    alert("مشكلة في حفظ البيانات !");
+                }
+            } catch(e) {
+                console.error("Error saving ", e);
+                alert("حدث خطأ في الاتصال !");
+            }
         }
 
         function renderUI() {
@@ -644,8 +703,8 @@
             let lot = parkingLots.find(l => l.id === id);
             if(lot && (lot.current + amt >= 0) && (lot.current + amt <= lot.capacity)) {
                 lot.current += amt;
-                saveToLocal();
                 renderUI();
+                saveToFirebase();
             }
         }
 
@@ -656,8 +715,8 @@
                 if (num < 0) num = 0;
                 if (num > lot.capacity) num = lot.capacity;
                 lot.current = num;
-                saveToLocal();
                 updateLiveTotalsOnly();
+                saveToFirebase();
             }
         }
 
@@ -681,8 +740,10 @@
             document.getElementById('totalOccupancy').innerText = totalCap > 0 ? ((totalCur / totalCap) * 100).toFixed(1) + '%' : '0%';
         }
 
-        function syncToLocal() {
-            saveToLocal();
+        async function syncToFirebase() {
+            document.getElementById('loading').classList.remove('hide');
+            await saveToFirebase();
+            document.getElementById('loading').classList.add('hide');
             const toast = document.getElementById('toast');
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 2500);
@@ -704,7 +765,7 @@
             lastTouchEnd = now;
         }, false);
 
-        loadFromLocal();
+        fetchFromFirebase();
     </script>
 </body>
 </html>
