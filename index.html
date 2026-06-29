@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <title>نظام مواقف حفلة فوكالي </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #ff6b35;
+            --secondary: #f7931e;
+            --accent: #00d4ff;
+            --dark-bg: #050508;
+            --card-bg: rgba(15, 15, 25, 0.7);
+            --card-border: rgba(255, 107, 53, 0.3);
+            --text-main: #ffffff;
+            --text-muted: #a0a0b8;
+            --success: #00ff88;
+            --danger: #ff3366;
+            --glow-primary: 0 0 20px rgba(255, 107, 53, 0.5);
+            --glow-accent: 0 0 20px rgba(0, 212, 255, 0.5);
+            --glow-success: 0 0 25px rgba(0, 255, 136, 0.4);
+        }
+
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            -webkit-tap-highlight-color: transparent; 
+            touch-action: manipulation; 
+        }
+
+        html, body {
+            height: 100%;
+            overflow-x: hidden;
+        }
+
+        body { 
+            background: var(--dark-bg); 
+            color: var(--text-main); 
+            font-family: 'Tajawal', sans-serif; 
+            padding: 20px; 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 24px; 
+            max-width: 650px;
+            margin: 0 auto;
+            width: 100%;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255, 107, 53, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 212, 255, 0.08) 0%, transparent 50%);
+            z-index: -1;
+            animation: floatBg 30s ease-in-out infinite;
+        }
+
+        @keyframes floatBg {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-20px, 20px); }
+        }
+        
+
+
+        header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: var(--card-bg); 
+            border: 1px solid var(--card-border); 
+            padding: 20px; 
+            border-radius: 20px;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), var(--accent), transparent);
+        }
+
+        header h1 { 
+            font-size: 20px; 
+            font-weight: 900; 
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(255, 107, 53, 0.3);
+            letter-spacing: 0.5px;
+        }
+
+        .refresh-btn {
+            background: rgba(255, 107, 53, 0.1);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 10px 18px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 700;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+        }
+
+        .refresh-btn:hover {
+            background: rgba(255, 107, 53, 0.2);
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: var(--glow-primary);
+        }
+
+        .refresh-btn:active {
+            transform: translateY(-2px) scale(0.98);
+        }
+
+        .stats-grid { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 14px; 
+        }
+
+        .stat-card { 
+            background: var(--card-bg); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            border-radius: 18px; 
+            padding: 20px 12px; 
+            text-align: center;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.5), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 
+                0 16px 48px rgba(0, 0, 0, 0.6),
+                0 0 30px rgba(255, 107, 53, 0.2);
+            border-color: var(--card-border);
+        }
+
+        .stat-card:hover::after {
+            opacity: 1;
+        }
+
+        .stat-label { 
+            font-size: 11px; 
+            color: var(--text-muted); 
+            margin-bottom: 8px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value { 
+            font-size: 28px; 
+            font-weight: 900; 
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
+        }
+
+        .section-title { 
+            font-size: 16px; 
+            font-weight: 800; 
+            color: #fff; 
+            margin: 8px 0 16px 0; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            letter-spacing: 0.3px;
+        }
+
+        .section-title i { 
+            color: var(--primary);
+            text-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
+        }
+
+        .lot-card { 
+            background: var(--card-bg); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            border-radius: 20px; 
+            padding: 20px;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lot-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            opacity: 0.8;
+        }
+
+        .lot-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 
+                0 16px 48px rgba(0, 0, 0, 0.6),
+                0 0 40px rgba(255, 107, 53, 0.15);
+            border-color: rgba(255, 107, 53, 0.3);
+        }
+
+        .lot-info { 
+            display: flex; 
+            justify-content: space-between; 
+            margin-bottom: 16px; 
+            font-size: 15px; 
+            font-weight: 800; 
+            align-items: center;
+        }
+
+        .lot-cap { 
+            font-size: 12px; 
+            color: var(--accent);
+            background: rgba(0, 212, 255, 0.1);
+            padding: 6px 14px;
+            border-radius: 30px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            font-weight: 700;
+        }
+        
+        .lot-actions { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            gap: 14px; 
+        }
+
+        .btn-ctrl { 
+            flex: 1; 
+            height: 56px; 
+            border: none; 
+            border-radius: 14px; 
+            font-size: 28px; 
+            font-weight: 900; 
+            color: #fff; 
+            cursor: pointer; 
+            user-select: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-ctrl::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-ctrl:hover::before {
+            left: 100%;
+        }
+
+        .btn-ctrl:active {
+            transform: scale(0.94);
+        }
+
+        .btn-minus { 
+            background: linear-gradient(135deg, #ff3366 0%, #ff1a4d 100%);
+            box-shadow: 0 8px 24px rgba(255, 51, 102, 0.3);
+        }
+
+        .btn-minus:hover {
+            box-shadow: 0 12px 36px rgba(255, 51, 102, 0.5);
+            transform: translateY(-3px);
+        }
+
+        .btn-plus { 
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: #000;
+            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.4);
+        }
+
+        .btn-plus:hover {
+            box-shadow: 0 12px 36px rgba(255, 107, 53, 0.6);
+            transform: translateY(-3px);
+        }
+        
+        .num-input { 
+            width: 90px; 
+            height: 56px;
+            background: rgba(5, 5, 8, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            color: #fff;
+            text-align: center; 
+            font-size: 24px; 
+            font-weight: 900; 
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .num-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 
+                0 0 0 3px rgba(255, 107, 53, 0.15),
+                inset 0 2px 8px rgba(0, 0, 0, 0.3),
+                0 0 20px rgba(255, 107, 53, 0.3);
+            transform: scale(1.02);
+        }
+
+        .num-input::-webkit-outer-spin-button,
+        .num-input::-webkit-inner-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+
+        .num-input { 
+            -moz-appearance: textfield; 
+        }
+
+        .chart-box { 
+            background: var(--card-bg); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            border-radius: 20px; 
+            padding: 20px;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+        }
+
+        .bar-chart { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 14px; 
+        }
+
+        .chart-row { 
+            display: flex; 
+            align-items: center; 
+            gap: 14px; 
+        }
+
+        .chart-lbl { 
+            width: 55px; 
+            font-size: 13px; 
+            color: var(--text-muted); 
+            font-weight: 800; 
+        }
+
+        .chart-bg { 
+            flex-grow: 1; 
+            height: 22px; 
+            background: rgba(10, 10, 18, 0.6); 
+            border-radius: 12px; 
+            overflow: hidden;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .chart-fill { 
+            height: 100%; 
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+            width: 0%; 
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(255, 107, 53, 0.4);
+            position: relative;
+        }
+
+        .chart-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .chart-val { 
+            width: 55px; 
+            text-align: left; 
+            font-size: 13px; 
+            font-weight: 800; 
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .sync-btn { 
+            width: 100%; 
+            height: 64px; 
+            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+            color: #000; 
+            border: none; 
+            border-radius: 18px; 
+            font-size: 18px; 
+            font-weight: 900; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 10px; 
+            margin-top: auto; 
+            cursor: pointer; 
+            box-shadow: 0 12px 40px rgba(0, 255, 136, 0.4);
+            font-family: 'Tajawal', sans-serif;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sync-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s;
+        }
+
+        .sync-btn:hover::before {
+            left: 100%;
+        }
+
+        .sync-btn:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 18px 56px rgba(0, 255, 136, 0.6);
+        }
+
+        .sync-btn:active {
+            transform: translateY(-2px) scale(0.98);
+        }
+
+        .toast { 
+            position: fixed; 
+            bottom: 40px; 
+            left: 50%; 
+            transform: translateX(-50%) translateY(150px); 
+            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+            color: #000; 
+            padding: 16px 32px; 
+            border-radius: 50px; 
+            font-size: 15px; 
+            font-weight: 900; 
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
+            z-index: 100;
+            box-shadow: 0 16px 48px rgba(0, 255, 136, 0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        .toast.show { 
+            transform: translateX(-50%) translateY(0); 
+        }
+
+        @keyframes spin { 
+            0% { transform: rotate(0deg); } 
+            100% { transform: rotate(360deg); } 
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>مواقف حفلة فوكالي</h1>
+        <button class="refresh-btn" onclick="loadFromLocal()"><i class="fa-solid fa-rotate"></i> إعادة تحميل</button>
+    </header>
+
+    <div class="stats-grid">
+        <div class="stat-card"><div class="stat-label">السيارات الحالية</div><div class="stat-value" id="totalCurrent">0</div></div>
+        <div class="stat-card"><div class="stat-label">المواقف الشاغرة</div><div class="stat-value" id="totalRemaining">-</div></div>
+        <div class="stat-card"><div class="stat-label">نسبة الإشغال</div><div class="stat-value" id="totalOccupancy">0%</div></div>
+    </div>
+
+    <div id="lotsContainer"></div>
+
+    <div class="chart-box">
+        <div class="section-title"><i class="fa-solid fa-chart-bar"></i> <span>مراقبة نسبة</span></div>
+        <div class="bar-chart" id="chartContainer"></div>
+    </div>
+
+    <button class="sync-btn" onclick="syncToLocal()"><i class="fa-solid fa-save"></i> حفظ البيانات</button>
+    <div class="toast" id="toast">✓ تم حفظ البيانات بنجاح!</div>
+
+    <script>
+        const parkingConfig = {
+            'CP1': { name: 'المواقف العامة (CP1)', capacity: 50 },
+            'CP2': { name: 'المواقف العامة (CP2)', capacity: 65 },
+            'CP3': { name: 'المواقف العامة (CP3)', capacity: 400 },
+            'VIP1': { name: 'مواقف كبار الشخصيات (VIP1)', capacity: 500 },
+            'VIP2': { name: 'مواقف كبار الشخصيات (VIP2)', capacity: 150 }
+        };
+
+        let parkingLots = [
+            { id: 'CP1', name: parkingConfig['CP1'].name, capacity: parkingConfig['CP1'].capacity, current: 0 },
+            { id: 'CP2', name: parkingConfig['CP2'].name, capacity: parkingConfig['CP2'].capacity, current: 0 },
+            { id: 'CP3', name: parkingConfig['CP3'].name, capacity: parkingConfig['CP3'].capacity, current: 0 },
+            { id: 'VIP1', name: parkingConfig['VIP1'].name, capacity: parkingConfig['VIP1'].capacity, current: 0 },
+            { id: 'VIP2', name: parkingConfig['VIP2'].name, capacity: parkingConfig['VIP2'].capacity, current: 0 }
+        ];
+
+        function loadFromLocal() {
+            const saved = localStorage.getItem('vocaly-parking-data');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    if (Array.isArray(parsed)) {
+                        parkingLots = parsed.map(item => ({
+                            id: item.id,
+                            name: parkingConfig[item.id].name,
+                            capacity: parkingConfig[item.id].capacity,
+                            current: item.current || 0
+                        }));
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+            renderUI();
+        }
+
+        function saveToLocal() {
+            const saveData = parkingLots.map(l => ({id: l.id, current: l.current}));
+            localStorage.setItem('vocaly-parking-data', JSON.stringify(saveData));
+        }
+
+        function renderUI() {
+            const container = document.getElementById('lotsContainer');
+            const chart = document.getElementById('chartContainer');
+            
+            // حفظ الحقول التي في وضع التركيز حالياً لتفادي إغلاق الكيبورد أثناء الكتابة
+            const activeId = document.activeElement ? document.activeElement.dataset.id : null;
+            
+            container.innerHTML = ''; chart.innerHTML = '';
+            let totalCur = 0, totalCap = 0;
+
+            parkingLots.forEach(lot => {
+                totalCur += lot.current; totalCap += lot.capacity;
+                let pct = lot.capacity > 0 ? (lot.current / lot.capacity) * 100 : 0;
+
+                container.insertAdjacentHTML('beforeend', `
+                    <div class="lot-card" style="margin-bottom:12px;">
+                        <div class="lot-info"><span>${lot.name}</span><span class="lot-cap">السعة: ${lot.capacity}</span></div>
+                        <div class="lot-actions">
+                            <button class="btn-ctrl btn-minus" onclick="changeVal('${lot.id}', -1)">-</button>
+                            <input type="number" class="num-input" data-id="${lot.id}" pattern="[0-9]*" inputmode="numeric" value="${lot.current}" oninput="updateInputVal('${lot.id}', this.value)">
+                            <button class="btn-ctrl btn-plus" onclick="changeVal('${lot.id}', 1)">+</button>
+                        </div>
+                    </div>
+                `);
+
+                chart.insertAdjacentHTML('beforeend', `
+                    <div class="chart-row">
+                        <span class="chart-lbl">${lot.id}</span>
+                        <div class="chart-bg"><div class="chart-fill" style="width: ${pct}%"></div></div>
+                        <span class="chart-val">${pct.toFixed(1)}%</span>
+                    </div>
+                `);
+            });
+
+            document.getElementById('totalCurrent').innerText = totalCur.toLocaleString();
+            document.getElementById('totalRemaining').innerText = (totalCap - totalCur).toLocaleString();
+            document.getElementById('totalOccupancy').innerText = totalCap > 0 ? ((totalCur / totalCap) * 100).toFixed(1) + '%' : '0%';
+
+            // إعادة التركيز للحقل المفتوح لتأمين استمرار الكيبورد مفتوحاً
+            if (activeId) {
+                const inputEl = container.querySelector(`input[data-id="${activeId}"]`);
+                if (inputEl) inputEl.focus();
+            }
+        }
+
+        function changeVal(id, amt) {
+            let lot = parkingLots.find(l => l.id === id);
+            if(lot && (lot.current + amt >= 0) && (lot.current + amt <= lot.capacity)) {
+                lot.current += amt;
+                saveToLocal();
+                renderUI();
+            }
+        }
+
+        function updateInputVal(id, val) {
+            let lot = parkingLots.find(l => l.id === id);
+            if(lot) {
+                let num = parseInt(val) || 0;
+                if (num < 0) num = 0;
+                if (num > lot.capacity) num = lot.capacity;
+                lot.current = num;
+                saveToLocal();
+                updateLiveTotalsOnly();
+            }
+        }
+
+        function updateLiveTotalsOnly() {
+            let totalCur = 0, totalCap = 0;
+            parkingLots.forEach(lot => {
+                totalCur += lot.current; totalCap += lot.capacity;
+                let pct = lot.capacity > 0 ? (lot.current / lot.capacity) * 100 : 0;
+                
+                // تحديث البارات الجانبية مباشرة
+                const rows = document.getElementById('chartContainer').children;
+                for(let row of rows) {
+                    if(row.children[0].innerText === lot.id) {
+                        row.children[1].children[0].style.width = pct + '%';
+                        row.children[2].innerText = pct.toFixed(1) + '%';
+                    }
+                }
+            });
+            document.getElementById('totalCurrent').innerText = totalCur.toLocaleString();
+            document.getElementById('totalRemaining').innerText = (totalCap - totalCur).toLocaleString();
+            document.getElementById('totalOccupancy').innerText = totalCap > 0 ? ((totalCur / totalCap) * 100).toFixed(1) + '%' : '0%';
+        }
+
+        function syncToLocal() {
+            saveToLocal();
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // كود إضافي بالـ JS لمنع تكبير المتصفح عند الضغط المزدوج على أجهزة iOS وأندرويد
+        document.addEventListener('data-id', function (event) {
+            if (event.touches.length > 1) {
+                event.preventDefault();
+            }
+        }, { passive: false });
+
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            let now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+
+        loadFromLocal();
+    </script>
+</body>
+</html>
